@@ -6,7 +6,7 @@ export default async function Matches() {
   const characters = await prisma.character.findMany();
 
   return (
-    <main className="grid w-full place-content-center gap-6 sm:grid-cols-1 sm:place-items-center md:grid-cols-3 lg:grid-flow-col-dense lg:grid-cols-4 lg:place-items-start">
+    <main className="grid w-full place-content-center gap-6 sm:grid-cols-1 sm:place-items-center md:grid-cols-3 lg:grid-flow-col-dense lg:grid-cols-4 lg:place-items-start p-8">
       {characters.map((character) => (
         <Suspense key={character.id} fallback={<Skeleton />}>
           <Card character={character} />

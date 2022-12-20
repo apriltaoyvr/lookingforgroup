@@ -1,7 +1,7 @@
 import { Character } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import placehoder from '/public/images/placeholder.jpg'
+import placehoder from '/public/images/placeholder.png'
 
 const Card = ({ character }: { character: Character }) => {
   return (

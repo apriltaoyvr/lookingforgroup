@@ -7,6 +7,9 @@ module.exports = {
     './node_modules/flowbite/**/*.js',
   ],
   theme: {
+    fontFamily: {
+      sans: ['Inter', 'Roboto', 'Helvetica Neue', 'sans-serif'],
+    },
     extend: {},
   },
   darkMode: 'class',

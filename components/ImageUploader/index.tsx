@@ -9,7 +9,10 @@ const ImageUploader = ({
   setImage: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   async function upload(event: ChangeEvent<HTMLInputElement>) {
-    if (event.target.files === null) return;
+    if (!event.target.files || event.target.files.length === 0) {
+      throw new Error('You must select an image to upload.');
+    }
+
     const file = event.target.files[0];
     const reader = new FileReader();
 
@@ -56,11 +59,10 @@ const ImageUploader = ({
               ></path>
             </svg>
             <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
+              <span className="font-semibold">Click to upload</span>
             </p>
             <p className="text-xs text-neutral-500 dark:text-neutral-400">
-              Images only
+              Images must be 1mb or under
             </p>
           </div>
         )}

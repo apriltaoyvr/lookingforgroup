@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import prisma from '@/lib/client';
+import prisma from 'prisma/client';
 import Card from '@/components/Card';
 
 export default async function Matches() {

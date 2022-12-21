@@ -1,7 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import ImageUploader from '@/components/ImageUploader';
-import Image from 'next/image';
 
 export default function Home() {
   const [visible, setVisible] = useState(false);
@@ -11,28 +10,24 @@ export default function Home() {
   const [image, setImage] = useState('');
   const [desc, setDesc] = useState('');
 
-  useEffect(() => {}, []);
-
-  function handleSubmit(e) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const body = {name, userClass, level, image, desc};
+    const body = { name, userClass, level, image, desc };
     try {
       const response = await fetch('/api/characters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-
       if (response.status !== 200) {
-        console.error('Something went wrong with the form submission');
-        //set an error banner here
+        console.error('something went wrong');
+        throw new Error('There was an error with form submission');
       } else {
-        
+        console.info('Form submitted successfully');
       }
-
-
-    } catch {
-
+    } catch (error) {
+      console.error('There was an error with form submission', error);
+      throw new Error('There was an error with form submission');
     }
   }
 
@@ -58,13 +53,16 @@ export default function Home() {
             className="place-self-end rounded-lg border-2 border-yellow-600 px-2 py-1 text-xl font-bold text-neutral-700 transition-all hover:border-yellow-500 dark:text-neutral-300 dark:hover:text-neutral-200"
             onClick={() => setVisible(true)}
           >
-            Ready to start?
+            Let&apos;s start
           </button>
         </section>
       )}
       {visible && (
         <section className="min-w-[33vw] p-4">
-          <form className="flex flex-col rounded-lg border border-neutral-200 bg-white p-4 shadow-md dark:border-neutral-700 dark:bg-neutral-800" onSubmit={(e) => handleSubmit(e)}>
+          <form
+            className="flex flex-col rounded-lg border border-neutral-200 bg-white p-4 shadow-md dark:border-neutral-700 dark:bg-neutral-800"
+            onSubmit={(e) => handleSubmit(e)}
+          >
             <h1 className="text-semibold text-center	text-2xl">
               Tell us about {name === '' ? 'yourself' : name}
             </h1>

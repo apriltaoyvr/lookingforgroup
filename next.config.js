@@ -6,6 +6,11 @@ const nextConfig = {
   images: {
     domains: ['oiovhgyymhctzpzxgqmb.supabase.co', 'cdn.discordapp.com'],
   },
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
 };
 
 module.exports = nextConfig

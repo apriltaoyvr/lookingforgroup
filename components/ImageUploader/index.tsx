@@ -1,6 +1,6 @@
-import { ChangeEvent } from 'react';
-import { nanoid } from 'nanoid';
+import { ChangeEvent, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { nanoid } from 'nanoid';
 import { toast } from 'react-toastify';
 
 export default function ImageUploader({
@@ -10,6 +10,7 @@ export default function ImageUploader({
   image: string;
   setImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [uploading, setUploading] = useState(false);
   const supabase = createClient(
     //@ts-ignore
     process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -18,9 +19,11 @@ export default function ImageUploader({
 
   async function upload(event: ChangeEvent<HTMLInputElement>) {
     if (!event.target.files || event.target.files.length === 0) {
+      toast.error('Image could not be uploaded.');
       throw new Error('You must select an image to upload a profile picture.');
-      toast.error('Image could not be uploaded.')
     }
+
+    setUploading(true);
 
     const file = event.target.files[0];
     const fileExt = file.name.split('.').pop();
@@ -34,8 +37,8 @@ export default function ImageUploader({
         .upload(filePath, file, { contentType: file.type, upsert: true });
 
       if (uploadError) {
-        throw uploadError;
         toast.error('An error occured while uploading!');
+        throw uploadError;
       }
 
       if (data) {
@@ -46,6 +49,8 @@ export default function ImageUploader({
       }
     } catch (error) {
       toast.error('An error occured while uploading!');
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -65,7 +70,7 @@ export default function ImageUploader({
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg
               aria-hidden="true"
-              className="mb-3 h-10 w-10 text-neutral-400"
+              className="mb-3 h-10 w-10 text-neutral-400 disabled:text-neutral-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -78,10 +83,10 @@ export default function ImageUploader({
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
               ></path>
             </svg>
-            <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="mb-2 text-sm text-neutral-500 disabled:text-neutral-600 dark:text-neutral-400 disabled:dark:text-neutral-500">
               <span className="font-semibold">Click to upload</span>
             </p>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            <p className="text-xs text-neutral-500 disabled:text-neutral-600 dark:text-neutral-400 disabled:dark:text-neutral-500">
               Images must be 10mb or under
             </p>
           </div>
@@ -93,6 +98,7 @@ export default function ImageUploader({
           accept="image/*"
           className="hidden"
           onChange={(event) => upload(event)}
+          disabled={uploading}
         />
       </label>
     </section>

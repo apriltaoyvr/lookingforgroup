@@ -51,7 +51,7 @@ export default function Home() {
             </hgroup>
             <h2 className="mb-4 text-4xl font-normal text-neutral-500 dark:text-neutral-300 lg:text-xl">
               Find your <strong className="text-red-400">perfect</strong>{' '}
-              adventuring partner(s) today
+              adventuring partner today
             </h2>
           </header>
           <button
@@ -120,7 +120,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col ">
                 <label htmlFor="" className="mb-2 block text-sm font-medium">
-                  Let your potential party member(s) learn more about you
+                  About you
                 </label>
                 <textarea
                   rows={6}

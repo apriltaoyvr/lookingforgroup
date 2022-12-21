@@ -2,6 +2,8 @@ import { Suspense } from 'react';
 import prisma from 'prisma/client';
 import Card from '@/components/Card';
 
+export const revalidate = 10800;
+
 export default async function Matches() {
   const characters = await prisma.character.findMany();
 

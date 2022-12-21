@@ -4,7 +4,9 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['oiovhgyymhctzpzxgqmb.supabase.co', 'cdn.discordapp.com'],
+    domains: ['oiovhgyymhctzpzxgqmb.supabase.co'],
+    // Temporary
+    unoptimized: true,
   },
   api: {
     bodyParser: {

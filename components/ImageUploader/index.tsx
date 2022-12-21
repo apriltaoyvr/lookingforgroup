@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
-import axios from 'axios';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { nanoid } from 'nanoid';
+import { createClient } from '@supabase/supabase-js';
+import { toast } from 'react-toastify';
 
 export default function ImageUploader({
   image,
@@ -10,12 +10,16 @@ export default function ImageUploader({
   image: string;
   setImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  let pageImage: string = '';
-  const supabase = useSupabaseClient();
+  const supabase = createClient(
+    //@ts-ignore
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
 
   async function upload(event: ChangeEvent<HTMLInputElement>) {
     if (!event.target.files || event.target.files.length === 0) {
-      throw new Error('You must select an image to upload.');
+      throw new Error('You must select an image to upload a profile picture.');
+      toast.error('Image could not be uploaded.')
     }
 
     const file = event.target.files[0];
@@ -23,12 +27,25 @@ export default function ImageUploader({
     const fileName = `${nanoid()}.${fileExt}`;
     const filePath = `${fileName}`;
 
-    let { error: uploadError } = await supabase.storage
-      .from('profiles')
-      .upload(filePath, file, { upsert: true });
+    try {
+      toast('Uploading image.');
+      let { data, error: uploadError } = await supabase.storage
+        .from('profiles')
+        .upload(filePath, file, { contentType: file.type, upsert: true });
 
-    if (uploadError) {
-      throw uploadError;
+      if (uploadError) {
+        throw uploadError;
+        toast.error('An error occured while uploading!');
+      }
+
+      if (data) {
+        setImage(
+          `https://oiovhgyymhctzpzxgqmb.supabase.co/storage/v1/object/public/profiles/${data.path}`
+        );
+        toast.success('Profile picture successfully uploaded.');
+      }
+    } catch (error) {
+      toast.error('An error occured while uploading!');
     }
   }
 
@@ -38,7 +55,7 @@ export default function ImageUploader({
         htmlFor="dropzone-file"
         className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg"
         style={{
-          backgroundImage: `url("${pageImage}")`,
+          backgroundImage: `url("${image}")`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'contain',
           backgroundPosition: 'center',

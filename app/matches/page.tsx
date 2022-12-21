@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import Link from 'next/link';
 import prisma from '@/lib/client';
 import Card from '@/components/Card';
 
@@ -6,13 +7,21 @@ export default async function Matches() {
   const characters = await prisma.character.findMany();
 
   return (
-    <main className="grid w-full place-content-center gap-6 sm:grid-cols-1 sm:place-items-center md:grid-cols-3 lg:grid-flow-col-dense lg:grid-cols-4 lg:place-items-start p-8">
-      {characters.map((character) => (
-        <Suspense key={character.id} fallback={<Skeleton />}>
-          <Card character={character} />
-        </Suspense>
-      ))}
-    </main>
+    <div>
+      <h1 className="m-8 text-center text-4xl font-bold text-neutral-900 dark:text-white">
+        Let&apos;s meet your{' '}
+        <strong className="bg-gradient-to-r from-red-400 to-yellow-600 text-transparent bg-clip-text">
+          matches
+        </strong>
+      </h1>
+      <main className="grid w-full place-content-center gap-6 p-8 sm:grid-cols-1 sm:place-items-center md:grid-cols-3 lg:grid-cols-4 lg:place-items-start">
+        {characters.map((character) => (
+          <Suspense key={character.id} fallback={<Skeleton />}>
+            <Card character={character} />
+          </Suspense>
+        ))}
+      </main>
+    </div>
   );
 }
 

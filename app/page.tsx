@@ -1,6 +1,8 @@
 'use client';
 import { FormEvent, useState } from 'react';
 import ImageUploader from '@/components/ImageUploader';
+import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [visible, setVisible] = useState(false);
@@ -9,11 +11,13 @@ export default function Home() {
   const [level, setLevel] = useState(0);
   const [image, setImage] = useState('');
   const [desc, setDesc] = useState('');
+  const router = useRouter();
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const body = { name, userClass, level, image, desc };
     try {
+      toast('Submitting profile...');
       const response = await fetch('/api/characters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -21,20 +25,21 @@ export default function Home() {
       });
       if (response.status !== 200) {
         console.error('something went wrong');
-        throw new Error('There was an error with form submission');
+        toast.error('There was an error with form submission');
       } else {
-        console.info('Form submitted successfully');
+        toast.success('Form submitted successfully');
+        router.push('/matches');
       }
     } catch (error) {
       console.error('There was an error with form submission', error);
-      throw new Error('There was an error with form submission');
+      toast.error('There was an error with form submission');
     }
   }
 
   return (
     <article>
       {!visible && (
-        <section className="flex flex-col  gap-10">
+        <section className="flex flex-col gap-10">
           <header>
             <hgroup className="mb-8 text-4xl md:text-6xl lg:text-8xl">
               <h1 className="mb-4 font-bold leading-none tracking-tight text-neutral-900 dark:text-white">
@@ -59,6 +64,18 @@ export default function Home() {
       )}
       {visible && (
         <section className="min-w-[33vw] p-4">
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
           <form
             className="flex flex-col rounded-lg border border-neutral-200 bg-white p-4 shadow-md dark:border-neutral-700 dark:bg-neutral-800"
             onSubmit={(e) => handleSubmit(e)}
@@ -103,7 +120,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col ">
                 <label htmlFor="" className="mb-2 block text-sm font-medium">
-                  Description
+                  Let your potential party member(s) learn more about you
                 </label>
                 <textarea
                   rows={6}

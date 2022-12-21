@@ -22,7 +22,7 @@ async function addCharacter(req: NextApiRequest, res: NextApiResponse) {
   console.log(body);
   try {
     let newEntry;
-    if (body.image !== '') {
+    if (body.image === '') {
       newEntry = await prisma.character.create({
         data: {
           name: body.name,
